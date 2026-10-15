@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen flex flex-col justify-between p-4 font-sans select-none">
+  <div class="space-y-2">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Akıllı Hesap Makinesi</span>
+      <span id="memBadge" class="text-[11px] px-2 py-0.5 rounded bg-slate-900 text-slate-400 font-mono">Geçmiş: 0</span>
+    </div>
+    <div id="histList" class="text-right text-xs text-slate-400 h-10 overflow-y-auto font-mono space-y-0.5"></div>
+    <div id="disp" class="bg-slate-900 border border-slate-800 rounded-3xl p-5 text-right text-4xl font-extrabold font-mono overflow-x-auto">0</div>
+  </div>
+  <div class="grid grid-cols-4 gap-2.5 mt-4">
+    <button onclick="clr()" class="col-span-2 py-4 rounded-2xl bg-rose-500/20 text-rose-300 font-bold text-base">AC</button>
+    <button onclick="back()" class="py-4 rounded-2xl bg-slate-800 text-slate-200 font-bold text-base">⌫</button>
+    <button onclick="op('/')" class="py-4 rounded-2xl bg-indigo-600 text-white font-bold text-lg">÷</button>
+    <button onclick="num('7')" class="py-4 rounded-2xl bg-slate-900 border border-slate-800 font-bold text-xl">7</button>
+    <button onclick="num('8')" class="py-4 rounded-2xl bg-slate-900 border border-slate-800 font-bold text-xl">8</button>
+    <button onclick="num('9')" class="py-4 rounded-2xl bg-slate-900 border border-slate-800 font-bold text-xl">9</button>
+    <button onclick="op('*')" class="py-4 rounded-2xl bg-indigo-600 text-white font-bold text-lg">×</button>
+    <button onclick="num('4')" class="py-4 rounded-2xl bg-slate-900 border border-slate-800 font-bold text-xl">4</button>
+    <button onclick="num('5')" class="py-4 rounded-2xl bg-slate-900 border border-slate-800 font-bold text-xl">5</button>
+    <button onclick="num('6')" class="py-4 rounded-2xl bg-slate-900 border border-slate-800 font-bold text-xl">6</button>
+    <button onclick="op('-')" class="py-4 rounded-2xl bg-indigo-600 text-white font-bold text-lg">−</button>
+    <button onclick="num('1')" class="py-4 rounded-2xl bg-slate-900 border border-slate-800 font-bold text-xl">1</button>
+    <button onclick="num('2')" class="py-4 rounded-2xl bg-slate-900 border border-slate-800 font-bold text-xl">2</button>
+    <button onclick="num('3')" class="py-4 rounded-2xl bg-slate-900 border border-slate-800 font-bold text-xl">3</button>
+    <button onclick="op('+')" class="py-4 rounded-2xl bg-indigo-600 text-white font-bold text-lg">+</button>
+    <button onclick="num('0')" class="col-span-2 py-4 rounded-2xl bg-slate-900 border border-slate-800 font-bold text-xl">0</button>
+    <button onclick="num('.')" class="py-4 rounded-2xl bg-slate-900 border border-slate-800 font-bold text-xl">.</button>
+    <button onclick="calc()" class="py-4 rounded-2xl bg-emerald-500 text-slate-950 font-extrabold text-xl">=</button>
+  </div>
+<script>
+  let exp = "";
+  let historyCount = 0;
+  const disp = document.getElementById("disp");
+  const hist = document.getElementById("histList");
+  function sync(){ disp.textContent = exp || "0"; }
+  function num(v){ exp += v; sync(); }
+  function op(v){ if(!exp) return; exp += v; sync(); }
+  function clr(){ exp = ""; sync(); }
+  function back(){ exp = exp.slice(0,-1); sync(); }
+  function calc(){
+    try {
+      if(!exp) return;
+      const val = Function("return (" + exp + ")")();
+      const formatted = Number(val.toFixed(6));
+      const item = document.createElement("div");
+      item.textContent = exp + " = " + formatted;
+      hist.prepend(item);
+      historyCount++;
+      document.getElementById("memBadge").textContent = "Geçmiş: " + historyCount;
+      exp = String(formatted);
+      sync();
+    } catch(e) {
+      disp.textContent = "Hata";
+      exp = "";
+    }
+  }
+</script>
+</body>
+</html>
